@@ -1,12 +1,11 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-rem ---------------------------
-rem Usage
-rem ---------------------------
+goto :main
+
 :usage
 echo Usage:
-echo   build.bat [-r ^| -d][-h]
+echo   build.bat [-r ^| -d] [-h]
 echo.
 echo Options:
 echo   -r            Build Release (default)
@@ -20,22 +19,17 @@ echo.
 echo Env overrides:
 echo   set GENERATOR=Ninja
 echo.
-goto :eof
+exit /b 0
 
-rem ---------------------------
-rem Defaults
-rem ---------------------------
+:main
 set "BUILD_TYPE=Release"
 
-rem ---------------------------
-rem Parse args
-rem ---------------------------
 :parse
-if "%~1"=="" goto parsed
+if "%~1"=="" goto :parsed
 
 if /I "%~1"=="-h" (call :usage & exit /b 0)
-if /I "%~1"=="-r" (set "BUILD_TYPE=Release" & shift & goto parse)
-if /I "%~1"=="-d" (set "BUILD_TYPE=Debug"   & shift & goto parse)
+if /I "%~1"=="-r" (set "BUILD_TYPE=Release" & shift & goto :parse)
+if /I "%~1"=="-d" (set "BUILD_TYPE=Debug"   & shift & goto :parse)
 
 echo Unknown option: %~1
 call :usage
@@ -74,8 +68,8 @@ if not "%GENERATOR%"=="" (
         set "GEN=MinGW Makefiles"
       ) else (
         echo No suitable generator found.
-        echo Install Ninja, or run from a VS Developer Command Prompt (for nmake),
-        echo or install MinGW (mingw32-make), or set GENERATOR explicitly.
+        echo Install Ninja, or run from a VS Developer Command Prompt ^(for nmake^),
+        echo or install MinGW ^(mingw32-make^)^) , or set GENERATOR explicitly.
         echo Example:  set GENERATOR=Ninja
         exit /b 1
       )
